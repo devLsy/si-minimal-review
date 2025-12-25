@@ -4,7 +4,6 @@ server:
     session:
       timeout: 0
 
-## ???? ??
 file.path: D:/upload/si-core_v1/
 
 mybatis:
@@ -13,7 +12,6 @@ mybatis:
   configuration:
     jdbc-type-for-null: null
 
-## ???? ?? ??
 spring:
   servlet:
     multipart:
@@ -32,4 +30,4 @@ spring:
   thymeleaf:
     cache: false
 
-  
+
