@@ -1,14 +1,115 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.lsy.sicore_v1.user.mapper">
+<mapper namespace="com.lsy.sicore_v1.user.mapper.UserMapper">
 
     <!-- 목록 조회 -->
+    <select id="selectUserList" resultType="UserVo">
+        /* com.lsy.sicore_v1.user.mapper.selectUserList 사용자 목록 조회 */
+        SELECT
+              USER_ID
+            , LOGIN_ID
+            , PASSWORD
+            , USER_NAME
+            , EMAIL
+            , PHONE
+            , STATUS_CD
+            , LOGIN_FAIL_CNT
+            , LAST_LOGIN_AT
+            , CREATED_AT
+            , UPDATED_AT
+            FROM TB_USER
+    </select>
 
     <!-- 상세 조회 -->
+    <select id="selectUser" parameterType="String" resultType="UserVo">
+        /* com.lsy.sicore_v1.user.mapper.selectUser 사용자 상세 조회 */
+        SELECT
+              USER_ID
+            , LOGIN_ID
+            , PASSWORD
+            , USER_NAME
+            , EMAIL
+            , PHONE
+            , STATUS_CD
+            , LOGIN_FAIL_CNT
+            , LAST_LOGIN_AT
+            , CREATED_AT
+            , UPDATED_AT
+            FROM TB_USER
+            WHERE USER_ID = #{userId}
+    </select>
+
+    <!-- 등록 -->
+    <insert id="insertUser" parameterType="UserVo">
+        /* com.lsy.sicore_v1.user.mapper.insertUser 사용자 등록 */
+        INSERT INTO TB_USER
+        (
+              USER_ID
+            , LOGIN_ID
+            , PASSWORD
+            , USER_NAME
+            , EMAIL
+            , PHONE
+            , STATUS_CD
+            , LOGIN_FAIL_CNT
+            , LAST_LOGIN_AT
+            , CREATED_AT
+            , UPDATED_AT
+        )
+        VALUES
+        (
+              #{userId}
+            , #{loginId}
+            , #{password}
+            , #{userName}
+            , #{email}
+            , #{phone}
+            , 'NORMAL'
+            , 0
+            , SYSDATE
+            , SYSDATE
+            , SYSDATE
+        )
+    </insert>
 
     <!-- 수정 -->
+    <update id="updateUser" parameterType="UserVo">
+        /* com.lsy.sicore_v1.user.mapper.updateUser 사용자 정보 수정 */
+        UPDATE TB_USER
+          <set>
+                <if test="password != null and password != ''">
+                    PASSWORD = #{password},
+                </if>
+                <if test="email != null and email != ''">
+                    EMAIL = #{email},
+                </if>
+                <if test="phone != null and phone != ''">
+                    PHONE = #{phone},
+                </if>
+                <if test="statusCd != null and statusCd != ''">
+                    STATUS_CD = #{statusCd},
+                </if>
+                <if test="loginFailCnt != null and loginFailCnt != ''">
+                    LOGIN_FAIL_CNT = #{loginFailCnt},
+                </if>
+                <if test="lastLoginAt != null and lastLoginAt != ''">
+                    LAST_LOGIN_AT = SYSDATE,
+                </if>
+                <if test="updatedAt != null and updatedAt != ''">
+                    UPDATED_AT = SYSDATE
+                </if>
+          </set>
+          <where>
+            USER_ID = #{userId}
+          </where>
+    </update>
 
     <!-- 삭제 -->
-
+    <update id="deleteUser" parameterType="UserVo">
+        /* com.lsy.sicore_v1.user.mapper.deleteUser 사용자 탈퇴 */
+        UPDATE TB_USER
+           SET STATUS_CD = #{statusCd}
+           WHERE USER_ID = #{userId}
+    </update>
 
 </mapper>
