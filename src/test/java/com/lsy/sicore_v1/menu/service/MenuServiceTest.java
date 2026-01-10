@@ -23,6 +23,11 @@ class MenuServiceTest {
     }
 
     @Test
+    void 메뉴트리() {
+        menuMapper.selectMenuTree();
+    }
+
+    @Test
     @Disabled
     void 상세() {
         menuMapper.selectMenu("MNU_SYS_000");

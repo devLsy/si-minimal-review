@@ -10,6 +10,7 @@ import java.util.List;
 public interface MenuMapper {
 
     List<MenuVo> selectMenuList();
+    List<MenuVo> selectMenuTree();
     MenuVo selectMenu(String menuId);
     int insertMenu(MenuVo menuVo);
     int updateMenu(@Param("menuVo") MenuVo menuVo, @Param("menuId") String menuId);
