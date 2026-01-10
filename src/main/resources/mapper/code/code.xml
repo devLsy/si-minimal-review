@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lsy.sicore_v1.code.mapper.CodeMapper">
+
+    <!-- 목록 조회 -->
+    <select id="selectCodeList" resultType="CodeVo">
+        /* com.lsy.sicore_v1.code.mapper.CodeMapper.selectCodeList 코드 목록 조회 */
+        SELECT
+              CODE
+            , GROUP_CODE
+            , CODE_NAME
+            , SORT_ORDER
+            , USE_YN
+            , CREATED_AT
+            , UPDATED_AT
+            FROM TB_CODE
+    </select>
+
+    <!-- 상세 조회 -->
+    <select id="selectCode" resultType="CodeVo">
+        /* com.lsy.sicore_v1.code.mapper.CodeMapper.selectCode 코드 상세 조회 */
+        SELECT
+              CODE
+            , GROUP_CODE
+            , CODE_NAME
+            , SORT_ORDER
+            , USE_YN
+            , CREATED_AT
+            , UPDATED_AT
+            FROM TB_CODE
+            WHERE GROUP_CODE = #{groupCode} AND CODE = #{code}
+    </select>
+
+    <!-- 등록 -->
+    <insert id="insertCode" parameterType="CodeVo">
+        /* com.lsy.sicore_v1.code.mapper.CodeMapper.insertCode 코드 등록 */
+        INSERT INTO TB_CODE
+        (
+              CODE
+            , GROUP_CODE
+            , CODE_NAME
+            , SORT_ORDER
+            , CREATED_AT
+            , UPDATED_AT
+        )
+        VALUES
+        (
+              #{code}
+            , #{groupCode}
+            , #{codeName}
+            , #{sortOrder}
+            , SYSDATE
+            , SYSDATE
+        )
+    </insert>
+
+    <!-- 수정 -->
+    <update id="updateCode">
+        /* com.lsy.sicore_v1.code.mapper.CodeMapper.updateCode 코드 수정 */
+        UPDATE TB_CODE
+          <set>
+                <if test="codeVo.code != null and codeVo.code != ''">
+                    CODE = #{codeVo.code},
+                </if>
+                <if test="codeVo.groupCode != null and codeVo.groupCode != ''">
+                    GROUP_CODE = #{codeVo.groupCode},
+                </if>
+                <if test="codeVo.codeName != null and codeVo.codeName != ''">
+                    CODE_NAME = #{codeVo.codeName},
+                </if>
+                <if test="codeVo.sortOrder != null and codeVo.sortOrder != ''">
+                    SORT_ORDER = #{codeVo.sortOrder},
+                </if>
+          </set>
+          <where>
+            GROUP_CODE = #{oldGroupCode} AND CODE = #{oldCode}
+          </where>
+    </update>
+
+    <!-- 삭제 -->
+    <update id="deleteCode">
+        /* com.lsy.sicore_v1.code.mapper.CodeMapper.deleteCode 코드 사용 중지 */
+        UPDATE TB_CODE
+           SET USE_YN = 'N'
+           WHERE GROUP_CODE = #{groupCode} AND CODE = #{code}
+    </update>
+
+</mapper>

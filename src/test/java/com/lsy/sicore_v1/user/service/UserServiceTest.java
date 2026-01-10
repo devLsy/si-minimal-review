@@ -16,11 +16,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Transactional
 class UserServiceTest {
 
-    @Autowired
-    private UserMapper userMapper;
+    @Autowired private UserMapper userMapper;
 
     @Test
-    @Disabled
+//    @Disabled
     void 등록() {
         // given
         UserVo user = new UserVo();
@@ -48,11 +47,16 @@ class UserServiceTest {
     }
 
     @Test
-//    @Disabled
+    @Disabled
+    void 상세() {
+        userMapper.selectUser("1");
+    }
+
+    @Test
+    @Disabled
     void 수정() {
         UserVo user = new UserVo();
         user.setPassword("4321");
-        
         user.setUserId("1");
 
         // when
@@ -65,5 +69,10 @@ class UserServiceTest {
     @Test
     @Disabled
     void 탈퇴() {
+        UserVo delUser = new UserVo();
+        delUser.setUserId("1");
+        delUser.setStatusCd("WITHDRAW");
+        userMapper.deleteUser(delUser);
     }
+
 }
