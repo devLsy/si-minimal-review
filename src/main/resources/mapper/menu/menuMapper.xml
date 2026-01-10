@@ -26,6 +26,7 @@
             , MENU_NAME
             , PARENT_MENU_ID
             , MENU_LEVEL
+            , MENU_URL
             , SORT_ORDER
             , USE_YN
             , LPAD(' ', 2 * (LEVEL - 1)) || MENU_NAME AS "treeView"
