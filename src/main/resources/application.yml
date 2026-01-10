@@ -10,7 +10,7 @@ mybatis:
   mapper-locations: mapper/**/*.xml
   type-aliases-package: com.lsy.sicore_v1.*
   configuration:
-    jdbc-type-for-null: null
+    jdbc-type-for-null: VARCHAR
 
 spring:
   servlet:
