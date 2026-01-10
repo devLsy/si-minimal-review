@@ -28,6 +28,7 @@ spring:
       password: 1234
       connection-timeout: 60000
       auto-commit: false
+
   thymeleaf:
     cache: false
 
