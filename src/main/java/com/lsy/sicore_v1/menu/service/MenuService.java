@@ -7,7 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +25,41 @@ public class MenuService {
      */
     public List<MenuVo> selectMenuList() {
         return menuMapper.selectMenuList();
+    }
+
+    /**
+     * 메뉴트리 조회
+     * @return
+     */
+    public List<MenuVo> selectMenuTree() {
+        return makeMenuTree(menuMapper.selectMenuTree());
+    }
+
+    /**
+     * 메뉴트리 조합
+     * @param allMenuList
+     * @return
+     */
+    private List<MenuVo> makeMenuTree(List<MenuVo> allMenuList) {
+        List<MenuVo> rootList = new ArrayList<>();
+        Map<String, MenuVo> map = new HashMap<>();
+
+        allMenuList.forEach(m -> map.put(m.getMenuId(), m));
+
+        for (MenuVo menu : allMenuList) {
+            // 최상위 메뉴
+            if (menu.getParentMenuId() == null) {
+                rootList.add(menu);
+            // 하위 메뉴
+            } else {
+                MenuVo parent = map.get(menu.getParentMenuId());
+                if (parent != null) {
+                    parent.getChildren().add(menu);
+                }
+            }
+        }
+
+        return rootList;
     }
 
     /**

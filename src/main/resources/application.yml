@@ -10,6 +10,7 @@ mybatis:
   mapper-locations: mapper/**/*.xml
   type-aliases-package: com.lsy.sicore_v1.*
   configuration:
+    map-underscore-to-camel-case: true
     jdbc-type-for-null: VARCHAR
 
 spring:
