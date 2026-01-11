@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
+
+<div layout:fragment="content">
+    <div class="container-fluid">
+        <h3 class="fw-bold mb-4"><i class="bi bi-list-task me-2"></i>메뉴 관리</h3>
+        <div class="row g-4">
+            <div class="col-md-5">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between">
+                        <h6 class="m-0 fw-bold text-primary">메뉴 트리</h6>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="loadMenus()"><i class="bi bi-arrow-clockwise"></i></button>
+                    </div>
+                    <div class="card-body">
+                        <div id="menuTree" class="list-group list-group-flush border rounded overflow-auto" style="height: 500px;"></div>
+                        <button class="btn btn-danger w-100 mt-3 fw-bold" onclick="deleteBatch()">선택 항목 일괄 삭제</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-7">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
+                        <h6 class="m-0 fw-bold text-primary">메뉴 상세 정보</h6>
+                        <button class="btn btn-sm btn-success fw-bold" onclick="openRegModal()">
+                            <i class="bi bi-plus-lg me-1"></i> 신규 등록
+                        </button>
+                    </div>
+                    <div class="card-body p-4">
+                        <form id="detailForm">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">메뉴 ID</label>
+                                    <input type="text" id="detMenuId" class="form-control bg-light" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">메뉴 이름</label>
+                                    <input type="text" id="detMenuName" class="form-control">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">메뉴 URL</label>
+                                    <input type="text" id="detMenuUrl" class="form-control">
+                                </div>
+                                <div class="col-12 text-end mt-4">
+                                    <button type="button" class="btn btn-primary px-4 fw-bold" onclick="updateMenu()">수정사항 저장</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="regModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title fw-bold">새 메뉴 등록</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="regForm">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">메뉴 ID</label>
+                            <input type="text" id="regMenuId" class="form-control" placeholder="MNU-SYS-999">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">메뉴 이름</label>
+                            <input type="text" id="regMenuName" class="form-control" placeholder="메뉴명 입력">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">부모 메뉴 ID</label>
+                            <input type="text" id="regParentMenuId" class="form-control" placeholder="MNU_SYS_0000">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">메뉴 레벨</label>
+                            <input type="text" id="regMenuLevel" class="form-control" placeholder="1">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">정렬 순서</label>
+                            <input type="text" id="regSortOrder" class="form-control" placeholder="1">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">메뉴 URL</label>
+                            <input type="text" id="regMenuUrl" class="form-control" placeholder="/sys/log">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-success fw-bold" onclick="saveNewMenu()">등록하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script th:inline="javascript">
+        $(document).ready(function() {
+            loadMenus();
+        });
+
+        function loadMenus() {
+            $.get('/api/menus', function(data) {
+                const $tree = $('#menuTree').empty();
+                $.each(data, function(idx, menu) {
+                    const item = $(`
+                        <div class="list-group-item list-group-item-action d-flex align-items-center py-3" onclick="viewDetail('${menu.menuId}')">
+                            <input type="checkbox" class="form-check-input me-3" value="${menu.menuId}" onclick="event.stopPropagation()">
+                            <div class="flex-grow-1" style="cursor:pointer">
+                                <div class="fw-bold">${menu.menuName}</div>
+                                <small class="text-muted">${menu.menuId}</small>
+                            </div>
+                        </div>
+                    `);
+                    $tree.append(item);
+                });
+            });
+        }
+
+        function viewDetail(id) {
+            $.get('/api/menus/' + id, function(menu) {
+                $('#detMenuId').val(menu.menuId);
+                $('#detMenuName').val(menu.menuName);
+                $('#detMenuUrl').val(menu.menuUrl);
+            });
+        }
+
+        // 모달 열기
+        function openRegModal() {
+            $('#regForm')[0].reset();
+            $('#regModal').modal('show');
+        }
+
+        // 신규 등록 실행
+        function saveNewMenu() {
+            const data = {
+                menuId: $('#regMenuId').val().trim(),
+                menuName: $('#regMenuName').val().trim(),
+                menuLevel: $('#regMenuLevel').val().trim(),
+                parentMenuId: $('#regParentMenuId').val().trim(),
+                sortOrder: $('#regSortOrder').val().trim(),
+                menuUrl: $('#regMenuUrl').val().trim()
+            };
+
+            // 2. 유효성 검사 (최소한의 방어선)
+            if (!data.menuId) { alert('메뉴 ID를 입력해주세요.'); $('#regMenuId').focus(); return; }
+            if (!data.menuName) { alert('메뉴 이름을 입력해주세요.'); $('#regMenuName').focus(); return; }
+                    
+            if (data.menuLevel !== "1" && !data.parentMenuId) {
+                alert('하위 메뉴는 부모 메뉴 ID가 필수입니다.');
+                $('#regParentMenuId').focus();
+                return;
+            }
+
+            if (!data.menuLevel) { alert('메뉴 레벨을 입력해주세요.'); $('#regMenuLevel').focus(); return; }
+            if (!data.sortOrder) { alert('정렬 순서를 입력해주세요.'); $('#regSortOrder').focus(); return; }
+            if (!data.menuUrl) { alert('메뉴 URL을 입력해주세요.'); $('#regMenuUrl').focus(); return; }
+
+            if (!confirm('입력하신 정보로 새 메뉴를 등록하시겠습니까?')) return; // '취소' 클릭 시 함수 종료
+
+            $.ajax({
+                url: '/api/menus',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function() {
+                    alert('등록 완료!');
+                    $('#regModal').modal('hide');
+                    loadMenus();
+                }
+            });
+        }
+
+        // 수정 실행
+        function updateMenu() {
+            const id = $('#detMenuId').val();
+            if(!id) return alert('항목을 선택하세요.');
+            $.ajax({
+                url: '/api/menus/' + id,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify({ menuName: $('#detMenuName').val(), menuUrl: $('#detMenuUrl').val() }),
+                success: function() { alert('수정 완료!'); loadMenus(); }
+            });
+        }
+
+        // 일괄 삭제
+        function deleteBatch() {
+            const ids = $('.form-check-input:checked').map(function(){ return $(this).val(); }).get();
+            if(!ids.length) return alert('삭제할 항목을 선택하세요.');
+            if(!confirm('정말 삭제하시겠습니까?')) return;
+            $.ajax({
+                url: '/api/menus/remove',
+                type: 'PATCH',
+                contentType: 'application/json',
+                data: JSON.stringify(ids),
+                success: function() { alert('삭제 완료'); loadMenus(); }
+            });
+        }
+    </script>
+</div>
+</html>
