@@ -36,6 +36,37 @@ public class MenuService {
     }
 
     /**
+     * 1. 메뉴-권한 삭제
+     * 2. 메뉴 사용 중지
+     * @param menuIds
+     */
+    @Transactional 
+    public void removeMenuProcess(List<String> menuIds) {
+        if(menuIds == null || menuIds.isEmpty()) return;
+        // 1. 매핑 정보 삭제
+        deleteMultipleMappings(menuIds);
+        // 2. 메뉴 상태 변경
+        deleteMultipleMenus(menuIds);
+    }
+
+    /**
+     * 메뉴 사용 중지
+     * @param menuIds
+     */
+    private void deleteMultipleMenus(List<String> menuIds) {
+        int result = menuMapper.deleteMultipleMenus(menuIds);
+        if (result != menuIds.size()) throw new IllegalStateException("메뉴 사용 중지 실패");
+    }
+
+    /**
+     * 메뉴-권한 삭제
+     * @param menuIds
+     */
+    private void deleteMultipleMappings(List<String> menuIds) {
+        menuMapper.deleteMultipleMappings(menuIds);
+    }
+
+    /**
      * 메뉴트리 조합
      * @param allMenuList
      * @return
@@ -90,15 +121,5 @@ public class MenuService {
     public void updateMenu(MenuVo menuVo, String menuId) {
         int result = menuMapper.updateMenu(menuVo, menuId);
         if (result != 1) throw new IllegalStateException("메뉴 정보 수정 실패");
-    }
-
-    /**
-     * 메뉴 사용 중지
-     * @param menuId
-     */
-    @Transactional
-    public void deleteCode(String menuId) {
-        int result = menuMapper.deleteMenu(menuId);
-        if (result != 1) throw new IllegalStateException("메뉴 사용 중지 실패");
     }
 }

@@ -108,12 +108,25 @@
           </where>
     </update>
 
-    <!-- 삭제 -->
-    <update id="deleteMenu">
-        /* com.lsy.sicore_v1.menu.mapper.MenuMapper.deleteMenu [메뉴 사용 중지] */
+    <!-- 사용 중지 -->
+    <update id="deleteMultipleMenus">
+        /* com.lsy.sicore_v1.menu.mapper.MenuMapper.deleteMultipleMenus [메뉴 사용 중지] */
         UPDATE TB_MENU
            SET USE_YN = 'N'
-           WHERE MENU_ID = #{menuId}
+           WHERE MENU_ID IN
+            <foreach collection="list" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
     </update>
+
+    <!-- 메뉴-권한 삭제 -->
+    <delete id="deleteMultipleMappings" parameterType="list">
+        /* com.lsy.sicore_v1.menu.mapper.MenuMapper.deleteMultipleMappings [메뉴-권한 삭제] */
+        DELETE FROM TB_MENU_ROLE_MAPPING
+              WHERE MENU_ID IN
+            <foreach collection="list" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+    </delete>
 
 </mapper>

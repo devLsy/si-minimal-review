@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -68,11 +71,27 @@ class MenuServiceTest {
 
     @Test
     @Disabled
-    void 삭제() {
+    void 메뉴_권한삭제() {
+        ArrayList<String> menuIds = new ArrayList<>();
+//        menuIds.add("MNU_SYS_1000");
+//        menuIds.add("MNU_SYS_1100");
+//        menuIds.add("MNU_SYS_1200");
+
         // when
-        int result = menuMapper.deleteMenu("MNU_SYS_000");
+        int result = menuMapper.deleteMultipleMappings(menuIds);
 
         // then
-        assertEquals(1, result);
+        assertEquals(3, result);
     }
+    
+    @Test
+    @Disabled
+    void 삭제() {
+        // when
+        int result = menuMapper.deleteMultipleMenus(List.of("MNU_SYS_1000", "MNU_SYS_1100"));
+
+        // then
+        assertEquals(List.of("MNU_SYS_1000", "MNU_SYS_1100").size(), result);
+    }
+    
 }

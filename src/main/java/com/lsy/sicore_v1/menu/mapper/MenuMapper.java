@@ -14,5 +14,6 @@ public interface MenuMapper {
     MenuVo selectMenu(String menuId);
     int insertMenu(MenuVo menuVo);
     int updateMenu(@Param("menuVo") MenuVo menuVo, @Param("menuId") String menuId);
-    int deleteMenu(String menuId);
+    int deleteMultipleMenus(List<String> menuIds);
+    int deleteMultipleMappings(List<String> menuIds);
 }
