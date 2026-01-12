@@ -1,47 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Main Page</title>
-    <style>
-        /* 간단한 LNB 스타일 */
-        .wrapper { display: flex; }
-        .sidebar { width: 250px; background: #343a40; color: #fff; min-height: 100vh; padding: 20px; }
-        .sidebar ul { list-style: none; padding: 0; }
-        .sidebar li { margin-bottom: 10px; }
-        .parent-menu { font-weight: bold; color: #ffc107; cursor: pointer; display: block; margin-bottom: 5px; }
-        .sub-menu { padding-left: 20px; font-weight: normal; }
-        .sub-menu a { color: #fff; text-decoration: none; font-size: 0.9em; }
-        .sub-menu a:hover { text-decoration: underline; }
-        .content { flex: 1; padding: 20px; background: #f8f9fa; }
-    </style>
-</head>
-<body>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default_layout}">
 
-<div class="wrapper">
-    <nav class="sidebar">
-        <h3>My Admin</h3>
-        <hr>
-        <ul>
-            <li th:each="parent : ${menuList}">
-                <span class="parent-menu" th:text="${parent.menuName}">대메뉴</span>
-
-                <ul class="sub-menu" th:if="${not #lists.isEmpty(parent.children)}">
-                    <li th:each="child : ${parent.children}">
-                        <a th:href="${child.menuUrl != null ? child.menuUrl : '#'}"
-                           th:text="${child.menuName}">중메뉴</a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </nav>
-
-    <main class="content">
-        <h1>Dashboard</h1>
-        <p>메뉴 데이터가 좌측에 잘 나오나요?</p>
-        <div th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd HH:mm:ss')}"></div>
-    </main>
+<div layout:fragment="content">
 </div>
 
-</body>
 </html>
